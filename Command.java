@@ -2,6 +2,7 @@ public class Command {
 
 		public static double travel_fr;
 		public static double cut_fr;
+		public static double retract_fr;
 		public static double plunge_fr;
 		public static double safe_z;
 
@@ -17,6 +18,8 @@ public class Command {
 						args[i] = a[i];
 				}
 		}
+
+
 		public static Command move (double x, double y, double z, double feed) {
 				Command.x = x;
 				Command.y = y;

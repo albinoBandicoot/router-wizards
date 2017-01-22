@@ -14,11 +14,11 @@ public class PList {
 				}
 		}
 
-		public void add (String name, Boolean b, boolean gen_gui) {
+		public void add (String name, boolean b, boolean gen_gui) {
 				params.put (name, new BooleanParam (b, gen_gui));
 		}
 
-		public void add (String name, Double d, boolean gen_gui) {
+		public void add (String name, double d, boolean gen_gui) {
 				params.put (name, new RealParam (d, gen_gui));
 		}
 
@@ -33,9 +33,16 @@ public class PList {
 				return ((BooleanParam) p).value;
 		}
 
+		public int getInt (String s) throws ArgumentException {
+			double d = getDouble(s);
+			if (d != (int) d) throw new ArgumentException ("Parameter '" + s + "' must have an integer value!");
+			return (int) d;
+		}
+
 		public double getDouble (String s) throws ArgumentException {
 				Param p = params.get(s);
 				if (p == null) throw new ArgumentException ("No such parameter: '" + s + "'");
+				if (p instanceof GlobalParam) return ((GlobalParam) p).getValue();
 				if (! (p instanceof RealParam)) throw new ArgumentException ("Parameter '" + s + "' is not a double");
 				return ((RealParam) p).value;
 		}

@@ -1,0 +1,5 @@
+travel_feed 20
+cut_feed 3
+plunge_feed 1
+retract_feed 8
+safe_z 0
