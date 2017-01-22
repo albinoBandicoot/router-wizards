@@ -126,18 +126,18 @@ public class Wizard extends JPanel {
 		if (plunge_fr <= 0 || retract_fr <= 0) throw new ArgumentException ("Feedrates must be positive");
 		res.add (Command.lift());
 		res.add (Command.rapid (x,y));
-				res.add (Command.rapid (x,y,z));
-				int np = (int) (depth / peck_depth);
-				double residual_depth = depth - np*peck_depth;
-				for (int i=0; i < np; i++) {
-					res.add (Command.plunge (peck_depth + (i == 0 ? 0 : retract_len)));
-					res.add (Command.retract (retract_len));
-				}
-				if (residual_depth > 0.01) {
-					res.add (Command.plunge (peck_depth + (np == 0 ? 0 : retract_len)));
-				}
-				res.add (Command.move (x,y,z,Command.retract_fr));
-				return res;
+		res.add (Command.rapid (x,y,z));
+		int np = (int) (depth / peck_depth);
+		double residual_depth = depth - np*peck_depth;
+		for (int i=0; i < np; i++) {
+			res.add (Command.plunge (peck_depth + (i == 0 ? 0 : retract_len)));
+			res.add (Command.retract (retract_len));
+		}
+		if (residual_depth > 0.01) {
+			res.add (Command.plunge (peck_depth + (np == 0 ? 0 : retract_len)));
+		}
+		res.add (Command.move (x,y,z,Command.retract_fr));
+		return res;
 	}
 
 	private List<Command> generate_linear_pattern (List<Invocation> children) throws ArgumentException{
