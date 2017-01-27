@@ -11,7 +11,10 @@ public class Invocation {
 	public Invocation (Wizard w) {
 		wiz = w;
 		params = new PList (w.params);	// copy current values, without GUI elements attached.
-		globals = new PList (w.globals);
+		globals = new PList (w.global_over);
+		children = new ArrayList<Invocation>();
+		System.out.println("PARAMS: " + params);
+		System.out.println("GLOBALS: " + globals);
 	}
 
 	public void generate () throws ArgumentException{

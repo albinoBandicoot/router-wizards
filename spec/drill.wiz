@@ -1,8 +1,8 @@
 Drill
+drill.png
 X 0
 Y 0
 Z 0
 Depth 5
 Peck_depth 1.5
-Plunge_feedrate 0.5
-Retract_feedrate 3
+Retract_length 8

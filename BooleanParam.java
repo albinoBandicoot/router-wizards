@@ -42,4 +42,8 @@ public class BooleanParam extends Param {
 		if (ui == null) return;	// or throw?
 		value = ((JCheckBox) ui).isSelected();
 	}
+
+	public String toString () {
+		return "" + value;
+	}
 }

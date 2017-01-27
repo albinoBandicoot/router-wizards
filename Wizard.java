@@ -13,8 +13,17 @@ public class Wizard extends JPanel {
 	public JPanel param_panel;
 	public JLabel image;
 
+	public JButton cancel;
+	public JButton ok;
+
+	public WizardUI wiz_ui;
+
+	public static final int XS = 800;
+	public static final int YS = 600;
+	public static final int PWD = 300;
+
 	public static void readGlobals () throws IOException, ArgumentException {
-		Scanner sc = new Scanner (new File ("spec/globals"));
+		Scanner sc = new Scanner (new File ("globals"));
 		while (sc.hasNextLine()) {
 			Scanner ls = new Scanner (sc.nextLine());
 			String name = ls.next();
@@ -23,37 +32,41 @@ public class Wizard extends JPanel {
 		}
 	}
 
-	public Wizard (File spec) throws FileNotFoundException, IOException, ArgumentException {
+	public Wizard (File spec, WizardUI wizui) throws FileNotFoundException, IOException, ArgumentException {
+		wiz_ui = wizui;
+		System.out.println("Working on " + spec);
 		params = new PList();
 		global_over = new PList();
 		param_panel = new JPanel();
+		setLayout(null);
+		param_panel.setLayout(null);
+		param_panel.setBounds (8,8,PWD,YS);
 		Scanner sc = new Scanner (spec);
 		name = sc.nextLine();
 		File img_file = new File ("images/" + sc.nextLine());
 		BufferedImage bi = ImageIO.read (img_file);
 		image = new JLabel(new ImageIcon(bi));
-		image.setBounds (300, 20, 500, 500);
+		image.setBounds (PWD, 20, XS-PWD, YS - 40);
 
 		while (sc.hasNextLine()) {
 			Scanner ls = new Scanner(sc.nextLine());
 			String pname = ls.next();
 			String val = ls.next();
-			try {
-				double dval = Double.parseDouble (val);
-				params.add (pname, dval, true);
-			} catch (NumberFormatException ex) {
-			}
-			try {
+			if (val.equals("true") || val.equals("false")) {
 				boolean bval = Boolean.parseBoolean (val);
 				params.add (pname, bval, true);
-			} catch (NumberFormatException ex) {
+				System.out.println("added parameter " + pname + " = " + bval);
+			} else {
+				double dval = Double.parseDouble (val);
+				params.add (pname, dval, true);
+				System.out.println("added parameter " + pname + " = " + dval);
 			}
 		}
 		int i=0;
 		for (Map.Entry<String, Param> e : params.params.entrySet()) {
 			JLabel label = new JLabel (e.getKey());
-			label.setBounds(0, 40*i, 150, 25);
-			e.getValue().ui.setBounds(150, 40*i, 150, 25);
+			label.setBounds(0, 30*i, 150, 25);
+			e.getValue().ui.setBounds(150, 30*i, 150, 25);
 			param_panel.add (label);
 			param_panel.add (e.getValue().ui);
 			i++;
@@ -61,13 +74,26 @@ public class Wizard extends JPanel {
 		for (String name : globals.params.keySet()) {
 			GlobalParam g = new GlobalParam (name, globals.getDouble(name), false, true);
 			global_over.params.put (name, g);
-			g.ui.setBounds (0, 40*i, 250, 25);
+			g.ui.setBounds (0, 30*i, PWD, 25);
 			param_panel.add (g.ui);
 			i++;
 		}
 
 		add (param_panel);
 		add (image);
+
+		cancel = new JButton ("Cancel");
+		cancel.setBounds (PWD + 5, YS - 32, 120, 25);
+		cancel.addActionListener (wiz_ui);
+		cancel.setActionCommand ("Cancel");
+		ok = new JButton ("OK");
+		ok.setBounds (PWD + 150, YS - 32, 120, 25);
+		ok.addActionListener (wiz_ui);
+		ok.setActionCommand ("OK");
+		
+		
+		add (cancel);
+		add (ok);
 	}
 
 	public void setParams (PList p, PList g) throws ArgumentException{
@@ -99,6 +125,18 @@ public class Wizard extends JPanel {
 		global_over.updateGUI();
 	}
 
+	public boolean getBoolean (String name) throws ArgumentException {
+		return params.getBoolean(name);
+	}
+
+	public double getDouble (String name) throws ArgumentException {
+		try {
+			return params.getDouble(name);
+		} catch (ArgumentException ex) {
+			return global_over.getDouble(name);
+		}
+	}
+
 	public List<Command> generate (ArrayList<Invocation> children) throws ArgumentException {
 		readGUI();
 		if (name.equals("Drill")) {
@@ -113,14 +151,14 @@ public class Wizard extends JPanel {
 
 	private List<Command> generate_drill () throws ArgumentException {
 		List<Command> res = new ArrayList<Command>();
-		double x = params.getDouble("X");
-		double y = params.getDouble("Y");
-		double z = params.getDouble("Z");
-		double depth = params.getDouble ("Depth");
-		double peck_depth = params.getDouble("Peck_depth");
-		double retract_len = params.getDouble ("Retract_length");
-		double plunge_fr = params.getDouble ("Plunge_feedrate");
-		double retract_fr = params.getDouble ("Retract_feedrate");
+		double x = getDouble("X");
+		double y = getDouble("Y");
+		double z = getDouble("Z");
+		double depth = getDouble ("Depth");
+		double peck_depth = getDouble("Peck_depth");
+		double retract_len = getDouble ("Retract_length");
+		double plunge_fr = getDouble ("plunge_feed");
+		double retract_fr = getDouble ("retract_feed");
 		if (depth <= 0) throw new ArgumentException ("depth must be positive");
 		if (peck_depth <= 0) throw new ArgumentException ("peck depth must be positive");
 		if (plunge_fr <= 0 || retract_fr <= 0) throw new ArgumentException ("Feedrates must be positive");

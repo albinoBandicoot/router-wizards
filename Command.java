@@ -71,4 +71,8 @@ public class Command {
 	public static Command retract (double amt) {
 		return move (x, y, z + amt, retract_fr);
 	}
+
+	public String toString () {
+		return opcode + " X" + args[0] + " Y" + args[1] + " Z" + args[2] + " F" + args[3];
+	}
 }

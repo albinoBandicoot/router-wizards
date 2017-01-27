@@ -42,4 +42,8 @@ public class RealParam extends Param {
 		if (ui == null) return;	// or throw?
 		value = Double.parseDouble (((JTextField) ui).getText());
 	}
+
+	public String toString () {
+		return "" + value;
+	}
 }

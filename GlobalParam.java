@@ -28,7 +28,7 @@ public class GlobalParam extends Param {
 			local_value = g.local_value;
 			override = g.override;
 		} else {
-			throw new ArgumentException ("Not a global parameter!");
+			throw new ArgumentException ("Not a global parameter! (" + name + ")");
 		}
 	}
 
@@ -38,11 +38,11 @@ public class GlobalParam extends Param {
 			label = new JLabel (name + " (" + Wizard.globals.getDouble(name) + ")");
 		} catch (ArgumentException e) {
 		}
-		label.setBounds (0,0,200, 25);
+		label.setBounds (0,0,150, 25);
 		override_ui = new JCheckBox();
-		override_ui.setBounds (200,0,50,25);
+		override_ui.setBounds (150,0,25,25);
 		value_ui = new JTextField (local_value + "");
-		value_ui.setBounds (250,0,125,25);
+		value_ui.setBounds (175,0,125,25);
 		ui.setLayout(null);
 		ui.add (override_ui);
 		ui.add (label);
@@ -72,5 +72,9 @@ public class GlobalParam extends Param {
 		} catch (ArgumentException e) {
 		}
 		return 0;
+	}
+
+	public String toString () {
+		return local_value + " [" + (override ? "overriden]":"not overriden]");
 	}
 }

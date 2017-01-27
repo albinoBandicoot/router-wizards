@@ -60,4 +60,13 @@ public class PList {
 		}
 	}
 
+	public String toString () {
+		String s = "";
+		for (Map.Entry<String,Param> e : params.entrySet()) {
+			s += e.getKey() + ": " + e.getValue() + "\n";
+		}
+		return s;
+	}
+
+
 }
