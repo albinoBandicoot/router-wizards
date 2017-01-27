@@ -19,7 +19,6 @@ public class Command {
 		}
 	}
 
-
 	public static Command move (double x, double y, double z, double feed) {
 		Command.x = x;
 		Command.y = y;
@@ -27,6 +26,19 @@ public class Command {
 		return new Command ("mova", x, y, z, feed);
 	}
 
+	public static Command arc (double r, double theta, double dtheta, double feed) {
+		double cx = x - r*Math.cos(theta);
+		double cy = y - r*Math.sin(theta);
+		Command.x = cx + r * Math.cos(theta + dtheta);
+		Command.y = cy + r * Math.sin(theta + dtheta);
+		return new Command ("marc", r, theta, dtheta, feed);
+	}
+
+	public static void setpos (double x, double y, double z) {
+		Command.x = x;
+		Command.y = y;
+		Command.z = z;
+	}
 
 	public static Command lift () {
 		return move (x, y, safe_z, travel_fr);
@@ -48,6 +60,10 @@ public class Command {
 		return move (x, y, z, feed);
 	}
 
+	public static Command arccut (double r, double theta, double dtheta) {
+		return arc (r, theta, dtheta, cut_fr);
+	}
+
 	public static Command cut (double x, double y, double z) {
 		return move (x, y, z, cut_fr);
 	}
@@ -55,6 +71,7 @@ public class Command {
 	public static Command cut (double x, double y) {
 		return cut (x, y, z);
 	}
+
 
 	public static Command rapid (double x, double y, double z) {
 		return move (x,y,z,travel_fr);
